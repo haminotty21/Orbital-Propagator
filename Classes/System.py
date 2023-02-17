@@ -1,6 +1,7 @@
 
 
 class System:
+    mu = None
     """
     Parameters
     ----------
@@ -9,12 +10,8 @@ class System:
     Bodies  : Dictionary of all bodies in the System
 
     """
-
-    G = 6.673 * 10^-11
-    MU = None
-
-    def __init__(self, mass=0):
-        self.MU = mass * self.G
+    def __init__(self, mu=0, mass=0):
+        self.mu = mu
         self.Bodies = dict()
 
     def addbody(self, body, name=""):

@@ -1,5 +1,5 @@
 from math import sqrt, sin, sinh, cos, cosh
-from numpy import cross, dot
+from numpy import cross, dot, array
 
 class Propagator:
 
@@ -10,7 +10,7 @@ class Propagator:
     #   SFS      : Stumpff Function output S
     #   smja    : Semi-Major Axis (a)
     #   X       : Universal Anomaly
-    #   z       : "z" = alpha * X ^ 2
+    #   z       : "z" = alpha * X ** 2
 
     def __init__(self, sys=None, smja=0, timedelta=0.001):
         if sys is None:
@@ -20,23 +20,23 @@ class Propagator:
             self.SFS = 0
 
             self.dt = timedelta
-            self.thres = 10^-8
+            self.thres = 10**-8
             self.sys = sys
 
-            self.propagate_system
+            self.propagate_system()
 
     def propagate_system(self):
-        for body in self.sys.Bodies:
+        for body in self.sys.Bodies.values():
             r_mag = sqrt(dot(body.r, body.r))
             v_mag = sqrt(dot(body.v, body.v))
 
             if body.smja is None:
-                body.alp = 2/r_mag - v_mag ^ 2/self.sys.mu
+                body.alp = 2/r_mag - (v_mag**2)/self.sys.mu
 
             self.find_universal_anomaly(body)
-            self.solve_pos_vel(r_mag, v_mag, body)
+            body.r, body.v = self.solve_pos_vel(r_mag, v_mag, body)
 
-    def solve_pos_vel(self,r_0_mag, v_0_mag, body):
+    def solve_pos_vel(self, r_0_mag, v_0_mag, body):
         """
         :variables
             r_0     :   Initial Position
@@ -56,70 +56,74 @@ class Propagator:
         v_0 = body.v
 
         v_r = body.v_r
-        alpha = body.alp
 
         #   Calculate f and g
-        f = 1 - self.X^2/r_0_mag*self.SFC*self.alp*self.X^2
-        g = self.dt - 1/sqrt(self.sys.mu)*self.X^3 *self.SFS*self.alp*self.X^2
+        f = 1 - body.X**2/r_0_mag*self.SFC
+        g = self.dt - 1/sqrt(self.sys.mu)*body.X**3 *self.SFS
 
         #   Calculate r and r_mg
         r = f*r_0 + g*v_0
-        r_mag = sqrt(r * r)
+        r_mag = sqrt(dot(r, r))
 
         #   Calculate f_dot and g_dot
-        g_dot = 1 - self.X^2/r_mag*self.SFC
+        g_dot = 1 - body.X**2/r_mag*self.SFC
         f_dot = sqrt(self.sys.mu) / (r_0_mag * r_mag) * (
-                    self.alp * self.X ^ 3 * self.SFS * self.alp * self.X ^ 2 - self.X ^ 2)
+                    body.alp * body.X ** 3 * self.SFS - body.X)
         # Calculate v
         v = f_dot*r_0 + g_dot*v_0
 
         return r, v
 
-    def calc_SFS(self):
+    def calc_SFS(self, body):
 
         #   Calculate Stumpff function S(z)
-        if self.z > 0:
-            self.SFS = (sqrt(self.z) - sin(sqrt(self.z))) / sqrt(self.z ^ 3)
-        elif self.z < 0:
-            self.SFS = (sinh(sqrt(-self.z)) - sqrt(-self.z)) / sqrt(self.z) ^ 3
-        elif self.z == 0:
-            self.SFS = 1 / 6
+        if body.z > 0:
+            SFS = (sqrt(body.z) - sin(sqrt(body.z))) / sqrt(body.z) ** 3
+        elif body.z < 0:
+            SFS = (sinh(sqrt(-body.z)) - sqrt(-body.z)) / sqrt(-body.z) ** 3
+        elif body.z == 0:
+            SFS = 1 / 6
 
-    def calc_SFC(self):
+        return SFS
+
+    def calc_SFC(self, body):
 
         #   Calculate Stumpff function C(z)
-        if self.z > 0:
-            self.SFC = (1 - cos(sqrt(self.z))) / self.z
-        elif self.z < 0:
-            self.SFC = (cosh(sqrt(-self.z)) - 1) / -self.ze
-        elif self.z == 0:
-            self.SFC = 1 / 2
+        if body.z > 0:
+            SFC = (1 - cos(sqrt(body.z))) / body.z
+        elif body.z < 0:
+            SFC = (cosh(sqrt(-body.z)) - 1) / -body.z
+        elif body.z == 0:
+            SFC = 1 / 2
 
-    def solve_keplar_ratio(self, r, v, X, mu):
-
-       f_xi =  r*v/sqrt(mu)*X^2*self.SFC+(1-self.alp*r)*X^3*self.SFS + r*X - sqrt(mu)*self.dt
-       df_xi = r*v/sqrt(mu)*X*(1-self.alp*r)*X^2*self.SFC+r
-       return f_xi/df_xi
+        return SFC
 
     def find_universal_anomaly(self, body):
+        ratio = 1 + self.thres
         mu = self.sys.mu
         r = body.r
         r_mag = sqrt(dot(r, r))
         v = body.v
         X = sqrt(mu) * abs(body.alp) * self.dt
-
+        v_r = dot(v, r)/r_mag
         h = cross(r, v)
         e = 1/mu * (cross(v, h) - mu * r/r_mag)
+        e = sqrt(dot(e, e))
+        while abs(ratio) > self.thres:
 
-        while ratio > self.thres:
+            body.z = body.alp * X ** 2
+            SFC = self.calc_SFC(body)
+            SFS = self.calc_SFS(body)
 
-            self.z = self.alp * X ^ 2
-            self.calc_SFC()
-            self.calc_SFS()
+            f = r_mag * v_r / sqrt(mu) * X ** 2 * SFC + (1 - body.alp * r_mag) * X ** 3 * SFS + r_mag * X - sqrt(
+                mu) * self.dt
+            df = r_mag * v_r / sqrt(mu) * X * (1 - body.alp * X ** 2 * SFS) + (1 - body.alp * r_mag) * X \
+                 ** 2 * SFC + r_mag
 
-            ratio = self.solve_keplar_ratio(self.sys, body)
-
+            ratio = f/df
             X = X - ratio
-            self.z = self.alp * X ^ 2
 
-        self.X = X
+
+        body.X = X
+        self.SFC = SFC
+        self.SFS = SFS

@@ -10,14 +10,20 @@ class Body:
         v       :   Initial velocity vector
     """
 
-    mass = 0
-    r = array([0, 0, 0])
-    v = array([0, 0, 0])
+    Name = ""
+    mass = 0.0
+    r = array([0.0, 0.0, 0.0])
+    v = array([0.0, 0.0, 0.0])
+    z = 0.0
+    alp = 0.0
 
-    def __init__(self, _mass=0, r0=[0, 0, 0], v0=[0, 0, 0], ellipticity=0, semimajoraxis=None):
+    def __init__(self, name="", _mass=0, r0=[0.0, 0.0, 0.0], v0=[0.0, 0.0, 0.0], ellipticity=0, semimajoraxis=None):
+        self.Name = name
         self.mass = _mass
+        r0 = array(r0)
+        v0 = array(v0)
         self.r = r0
-        r_mag = sqrt(dot(r0,r0))
+        r_mag = sqrt(dot(r0, r0))
         self.v = v0
         self.e = ellipticity
         self.smja = semimajoraxis
