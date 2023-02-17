@@ -3,6 +3,7 @@ from Classes.Body import Body
 from Classes.System import System
 from Classes.Propagator import Propagator
 from numpy import array, dot, sqrt
+from Classes.Lambert_Solver_Izzio import Izzio_Lambert_Solver
 from Conversions import AU_to_SI, SI_to_AU
 
 
@@ -34,4 +35,12 @@ class Test:
         accur_pos = (sqrt(dot(expected_pos, expected_pos)) - sqrt(dot(result_pos, result_pos)))/sqrt(dot(expected_pos, expected_pos)) * 100
         accur_vel = (sqrt(dot(expected_vel, expected_vel)) - sqrt(dot(result_vel, result_vel)))/sqrt(dot(expected_vel, expected_vel)) * 100
         t = 1
+
+    def Lamberts_Problem(self):
+        r1 = array([5644, 2830, 4170])
+        r2 = array([-2240, 7320, 4980])
+        expected_vel1 = 10.84
+        expected_vel2 = 9.970
+
+        Izzio_Lambert_Solver(r1, r2, 398600, 20*60)
 
