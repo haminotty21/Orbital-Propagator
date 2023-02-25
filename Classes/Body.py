@@ -1,3 +1,4 @@
+from matplotlib.pyplot import axes, figure
 from numpy import dot, array
 from math import sqrt
 
@@ -16,6 +17,10 @@ class Body:
     v = array([0.0, 0.0, 0.0])
     z = 0.0
     alp = 0.0
+    v_array = 0
+    r_array = 0
+    time_array = 0
+
 
     def __init__(self, name="", _mass=0, r0=[0.0, 0.0, 0.0], v0=[0.0, 0.0, 0.0], ellipticity=0, semimajoraxis=None):
         self.Name = name
@@ -31,4 +36,10 @@ class Body:
             self.alp = 1/semimajoraxis
 
         self.v_r = dot(self.v, self.r)/r_mag
+
+    def plot_pos(self):
+        fig = figure()
+
+        ax = axes(projection='3d')
+        ax.plot3D(self.r_array[:, 0], self.r_array[:, 1], self.r_array[:, 2])
 
