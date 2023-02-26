@@ -1,17 +1,18 @@
 
 
-from numpy import array, sqrt, dot, cross, floor, pi, arccos, log2, sin, sinh, arcsin, arccosh, log, linspace, cos, \
+from numpy import array, sqrt, dot, floor, pi, arccos, log2, sin, sinh, arcsin, arccosh, log, linspace, cos, \
     arctan, tan, arcsinh, arctan2
 from numpy.array_api import atan2
-from numpy.linalg import norm
 
 
+def cross(a, b):
+    return [a[1]*b[2] - a[2]*b[1],
+            a[2]*b[0] - a[0]*b[2],
+            a[0]*b[1] - a[1]*b[0]]
 
 
-
-
-
-
+def norm(a):
+    return sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2])
 
 
 def Izzio_Lambert_Solver(r1=array([0.0, 0.0, 0.0]), r2=array([0.0, 0.0, 0.0]), mu=0, t=0, M =-1):
@@ -82,9 +83,9 @@ def findxy(Lambda, T, M):
     else:
         M_max = M
 
-    T_00 = arccos(Lambda) + Lambda * sqrt(1 - Lambda ** 2)
+    T_00 = arccos(Lambda) + Lambda * sqrt(1.0 - Lambda ** 2)
     T_0 = T_00 + M_max * pi
-    T_1 = 2 / 3 * (1 - Lambda ** 3)
+    T_1 = 2.0 / 3.0 * (1.0 - Lambda ** 3)
 
     if T < T_0 and M_max > 0:
         T_min = T_0
@@ -107,7 +108,7 @@ def findxy(Lambda, T, M):
 
     if T >= T_0:
         x_0 = (T_0/T) ** (2/3) - 1
-    elif T < T_1:
+    elif T <= T_1:
         x_0 = 5/2 * T_1*(T_1 - T)/(T * (1-Lambda**5)) + 1
     elif T_1 < T and T < T_0:
         x_0 = (T_0/T) ** (log2(T_1/T_0)) - 1
@@ -135,24 +136,46 @@ def findxy(Lambda, T, M):
 
 
 def Householder_Iterator(x_old, Lambda, T, M):
+    #text = open(r"householder_data", "a")
     thres = 10**-8
     err = 1
     iter = 0
+    err_list = list()
+    iter_list = list()
+    x_list = list()
+    x0 = x_old
     while thres < err:
         tof = calc_tof(x_old, Lambda, M)
         f = tof - T
         f_1, f_2, f_3 = dTdx(x_old, tof, Lambda)
         num = f_1 ** 2 - f*f_2/2
         denom = f_1 * (f_1**2 - f * f_2) + f_3 * f**2/6
-        x = x_old - f * num/denom
+        if f_1 != 0:
+            x = x_old - f * num/denom
+        else:
+            test = 1
         err = abs(x_old - x)
         if x < -1:
             test = 1
         x_old = x
+        err_list.append(err)
+        iter_list.append(iter)
+        x_list.append(x)
         iter = iter + 1
         if iter > 16:
             return None
+    # for i in iter_list:
+             #   text.write(f"{i} {err_list[i]} {x_list[i]} {x0}\n")
 
+            #text.write(f"Not Converged\n")
+            #text.close
+
+
+
+    # for i in iter_list:
+        # text.write(f"{i} {err_list[i]} {x_list[i]} {x0}\n")
+    #text.write(f"Converged\n")
+    #text.close
     return x
 
 
@@ -231,7 +254,7 @@ def Lancaster_tof(Lambda, x, M):
         psi_sin = arcsin((y - x*Lambda) * sqrt(1 - x ** 2))
         psi_cos = arccos(x*y + Lambda * (1 - x**2))
         psi_tan = arctan2(sin(psi_sin), cos(psi_cos))
-        psi = psi_tan
+        psi = psi_cos
         # print(str(psi_tan) + "==" + str(psi_cos))
 
     if x >= 1:

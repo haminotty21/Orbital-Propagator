@@ -68,7 +68,7 @@ class Test:
         pos_earth = array([-2.292663414632956E-2, -1.015900691571000, 1.443136695093059E-5])
         vel_earth = array([1.691315265663616E-2, -4.490327244856349E-4, 4.905338943924240E-7 ])
 
-        pos_mars = array([1.040530727385831, -9.156827817917115E-1, 1.040530727385831 ])
+        pos_mars = array([1.040530727385831, -9.156827817917115E-1, 1.040530727385831E-2 ])
         vel_mars = array([ 9.775555888077589E-3 , 1.170416979098932E-2, 5.089187517767667E-6])
 
         t = SI_to_AU(mu=GRAV_CONST_SUN_SI)
@@ -84,10 +84,10 @@ class Test:
         sys.addbody(Mars, "Mars")
 
         d_start = get_julian_datetime(datetime(2005, 6, 20))
-        d_end = get_julian_datetime(datetime(2005, 11, 7))
+        d_end = get_julian_datetime(datetime(2006, 11, 7))
 
         a_start = get_julian_datetime(datetime(2005, 12, 1))
-        a_end = get_julian_datetime(datetime(2007, 2, 24))
+        a_end = get_julian_datetime(datetime(2008, 2, 24))
 
         Propagator(sys, 0, starttime=d_start,
                    stoptime=a_end, dt=delta)
@@ -112,12 +112,8 @@ class Test:
                 tof = float(a_date - d_date)
                 if tof <= 0:
                     continue
-                if i == 106:
-                    print(j)
                 r1 = sys.Bodies['Earth'].r_array[sys.Bodies['Earth'].time_array.index(d_date)]
                 r2 = sys.Bodies['Mars'].r_array[sys.Bodies['Mars'].time_array.index(a_date)]
-                if i == 50 and j == 6:
-                    print(j)
                 v1_vec, v2_vec = Izzio_Lambert_Solver(r1=r1, r2=r2, mu=sys.mu, t=tof, M=0)
                 p, v1_vec, q = AU_to_SI(0, v1_vec)
                 p, v2_vec, q = AU_to_SI(0, v2_vec)
@@ -130,7 +126,7 @@ class Test:
                 v2[j, i] = norm(v2_vec)
                 j = j + 1
 
-        text.close()
+        #text.close()
         tot_v_sys1 = v1 + v2
         # p, tot_v_sys1, q = AU_to_SI(v=tot_v_sys1)
         # p, v1_SI, q = AU_to_SI(v=v1)
@@ -138,5 +134,3 @@ class Test:
 
         fig1, ax1 = Pork_Chop_Plot(departure_dates, arrival_dates, tot_v_sys1, arange(1, 52, .1))
         fig2, ax2 = Pork_Chop_Plot(departure_dates, arrival_dates, v1, arange(1, 50, .1))
-        ax1.plot.show()
-        ax2.plot.show()

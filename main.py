@@ -60,10 +60,8 @@ def drive():
     delta = 1
     # Testing against values given in Curtis Chapter 3 problem 3.20
     test = Test()
-    # test.propapagator()
-    t_v1, t_v2 = test.Lamberts_Problem()
-    # h, i, raan, e, aop, theta = test.orbital_elements_test()
-    # test.Porkchop_Plots()
+
+    test.Porkchop_Plots()
 
     h1, i1, raan1, e1, aop1, theta1 = orbital_elements(POS_B1, VEL_B1, GRAV_CONST_SUN)
     h2, i2, raan2, e2, aop2, theta2 = orbital_elements(POS_B2, VEL_B2, GRAV_CONST_SUN)
@@ -119,8 +117,8 @@ def drive():
     X = departure_dates
     Y = arrival_dates
     Z = tot_v_sys1
-    fig1, ax1 = Pork_Chop_Plot(departure_dates, arrival_dates, tot_v_sys1, arange(1, 50, .1))
-    fig2, ax2 = Pork_Chop_Plot(departure_dates, arrival_dates, v_sys1, arange(1, 20, .1))
+    fig1, ax1 = Pork_Chop_Plot(departure_dates, arrival_dates, tot_v_sys1, arange(1, 50, .3))
+    fig2, ax2 = Pork_Chop_Plot(departure_dates, arrival_dates, v_sys1, arange(1, 20, .3))
 
 
     Borisov = Body(name="Borisov", _mass=0, r0=POS_B2, v0=VEL_B2)
@@ -168,13 +166,9 @@ def drive():
     X = departure_dates
     Y = arrival_dates
     Z = tot_v_sys2
-    fig3, ax3 = Pork_Chop_Plot(departure_dates, arrival_dates, tot_v_sys2, arange(1, 60, .1))
-    fig4, ax4 = Pork_Chop_Plot(departure_dates, arrival_dates, v1_SI, arange(1, 20, .1))
-    ax1.plot.show()
-    ax2.plot.show()
-    ax3.plot.show()
-    ax4.plot.show()
-
+    fig3, ax3 = Pork_Chop_Plot(departure_dates, arrival_dates, tot_v_sys2, arange(1, 60, .3))
+    fig4, ax4 = Pork_Chop_Plot(departure_dates, arrival_dates, v1_SI, arange(1, 20, .3))
+    test = 1
 if __name__ == '__main__':
     drive()
 
