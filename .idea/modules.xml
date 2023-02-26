@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Universal_Variable_Propagator.iml" filepath="$PROJECT_DIR$/.idea/Universal_Variable_Propagator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Orbital-Propagator.iml" filepath="$PROJECT_DIR$/.idea/Orbital-Propagator.iml" />
     </modules>
   </component>
 </project>

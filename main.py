@@ -59,9 +59,9 @@ VEL_B2 = array([-8.241709369476881 * 10 ** -3, -1.156219024581502 * 10 ** -2, -1
 def drive():
     delta = 1
     # Testing against values given in Curtis Chapter 3 problem 3.20
-    test = Test()
+    # test = Test()
 
-    test.Porkchop_Plots()
+    # test.Porkchop_Plots()
 
     h1, i1, raan1, e1, aop1, theta1 = orbital_elements(POS_B1, VEL_B1, GRAV_CONST_SUN)
     h2, i2, raan2, e2, aop2, theta2 = orbital_elements(POS_B2, VEL_B2, GRAV_CONST_SUN)
@@ -77,7 +77,7 @@ def drive():
     Propagator(sys1, 0, starttime=get_julian_datetime(datetime(2017, 1, 1)), stoptime=get_julian_datetime(datetime(2019, 2,  1)), dt=delta)
 
 
-    d_start = get_julian_datetime(datetime(2017, 6, 1))
+    d_start = get_julian_datetime(datetime(2017, 1, 1))
     d_end = get_julian_datetime(datetime(2017, 12,  31))
     a_start = get_julian_datetime(datetime(2017, 8,  1))
     a_end = get_julian_datetime(datetime(2019, 2,  1))
@@ -114,11 +114,10 @@ def drive():
     p, tot_v_sys1, q = AU_to_SI(v=tot_v_sys1)
     p, v_sys1, q = AU_to_SI(v=tot_v_sys1)
 
-    X = departure_dates
-    Y = arrival_dates
-    Z = tot_v_sys1
     fig1, ax1 = Pork_Chop_Plot(departure_dates, arrival_dates, tot_v_sys1, arange(1, 50, .3))
     fig2, ax2 = Pork_Chop_Plot(departure_dates, arrival_dates, v_sys1, arange(1, 20, .3))
+    ax1.set_title("Earth to Oumouamoua Rendevous")
+    ax2.set_title("Earth to Oumouamoua Fly-by")
 
 
     Borisov = Body(name="Borisov", _mass=0, r0=POS_B2, v0=VEL_B2)
@@ -130,7 +129,7 @@ def drive():
     d_start = get_julian_datetime(datetime(2017, 1,  1))
     d_end = get_julian_datetime(datetime(2020, 8,  1))
 
-    a_start = get_julian_datetime(datetime(2019, 6,  1))
+    a_start = get_julian_datetime(datetime(2019, 7,  1))
     a_end = get_julian_datetime(datetime(2022, 2,  1))
     departure_dates = arange(d_start, d_end, delta)
     arrival_dates = arange(a_start, a_end, delta)
@@ -168,6 +167,9 @@ def drive():
     Z = tot_v_sys2
     fig3, ax3 = Pork_Chop_Plot(departure_dates, arrival_dates, tot_v_sys2, arange(1, 60, .3))
     fig4, ax4 = Pork_Chop_Plot(departure_dates, arrival_dates, v1_SI, arange(1, 20, .3))
+    ax3.set_title("Earth to Borisov Rendevous")
+    ax4.set_title("Earth to Borisov Fly-by")
+
     test = 1
 if __name__ == '__main__':
     drive()

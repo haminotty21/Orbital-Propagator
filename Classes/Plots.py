@@ -15,6 +15,9 @@ def Pork_Chop_Plot(X, Y, Z, levels):
     ax.clabel(CS, fontsize=10, colors=line_colors)
     fig.colorbar(CS)
     fig.show()
+    ax.set_xlabel('Departure Dates (Julian Days)')
+    ax.set_xlabel('Arrival Dates (Julian Days)')
+
     return fig, ax
 
 
