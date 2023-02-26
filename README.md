@@ -16,4 +16,7 @@ Using Izzio’s formulation, I developed my own script for solving the lambert p
 ![Earth to Oumouamoua Fly-by](https://user-images.githubusercontent.com/92574647/221439370-bab4edfd-6ccd-4a95-b552-7a22fb1ce0b8.png)
 ![Earth to Borisov Fly-by](https://user-images.githubusercontent.com/92574647/221439372-70010d54-6f9c-49f0-af98-20e963eb3b00.png)
 
-![Orbital Element Table](https://user-images.githubusercontent.com/92574647/221440260-384993c7-6e69-401d-899b-4593d26ac5d4.PNG)
+## Orbital Element Table
+The table below is the orbital elements calculated from the starting radius and velocity vectors for Oumouamoua and Borisov
+
+![Orbital Element Table](https://user-images.githubusercontent.com/92574647/221440324-e1560409-11a3-4edb-8223-ac58d8d3db62.PNG)
