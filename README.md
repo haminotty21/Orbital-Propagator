@@ -1,12 +1,15 @@
 # Orbital-Propagator
 Orbital Propagator made for AE502 using universal anomaly method.
+*IMPORTANT*
+I don’t know how to work with branches on github right now and I’ve accidentally stored my code in the master branch and not the main branch.
+
 
 # Quick, informal summary of methodology for development and testing
 ## Universal Propagator Testing
 I tested my universal propagator against the universal propagator in the python package “pykep”. In the test, I propagated a solar system consisting of the two bodies, Earth and Mars, for approximately a year and found that there was an error < 10e-4 for the entire run.
 
 ## Izzio Lambert Solver Testing
-Using Izzio’s formulation, I developed my own script for solving the lambert problem. Similarly to the universal propagator, I tested my code against the lambert solver in “pykep”. Both my code and the lambert solver from pykep were executed against over 300,000 custom Earth to Mars transfer scenarios developed using ephemeris data from JPL’s Horizons tool and my recently written and tested universal propagator script. Out of ~320,000 runs, only ~11 instances were found where the difference between the pykep output and my output ever exceeded 1e-5.
+Using Izzio’s formulation, I developed my own script for solving the lambert problem. Similarly to the universal propagator, I tested my code against the lambert solver in “pykep”. Both my code and the lambert solver from pykep were executed against over 300,000 custom Earth to Mars transfer scenarios developed using ephemeris data from JPL’s Horizons tool and my recently written and tested universal propagator script. Out of ~320,000 runs, only ~11 instances were found where the difference between the pykep output and my output ever exceeded 1e-5. Therefore, more debugging and testing is needed before this tool is deemed acceptable, but because the occurrances were so rare and most of the errors were less than 5% error with the lasgest being ~11%, I still used it in my porkchop plot creation.
 
 
 
@@ -20,3 +23,7 @@ Using Izzio’s formulation, I developed my own script for solving the lambert p
 The table below is the orbital elements calculated from the starting radius and velocity vectors for Oumouamoua and Borisov
 
 ![Orbital Element Table](https://user-images.githubusercontent.com/92574647/221440324-e1560409-11a3-4edb-8223-ac58d8d3db62.PNG)
+
+Given that the eccentricity of both orbits are greater than one, the trajectory for Oumouamoua and Borisov are interstellar orbits.
+
+I would think that these mission would not be the most realistic due to their margin for error. In most cases, the arrival window for each departure time is very small. If I had to pick a mission to pick, I would pick the rendezvous mission for Borisov. They seems to much a lot more available arrival dates with an acceptable delta V expenditure for each departure dates. This means that the mission could have “hiccups” and still be achievable my secondary thrust inputs to adjust the rendezvous arrival time.
